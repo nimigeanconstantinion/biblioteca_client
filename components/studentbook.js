@@ -1,4 +1,5 @@
 import { Api } from "../api.js";
+import { AddBook } from "./AddBook.js";
 import { Home } from "./Home.js";
 
 class StudentBook{
@@ -6,37 +7,108 @@ class StudentBook{
         this.student = student;
         this.aside = document.querySelector("aside");
         this.main = document.querySelector("main");
-        this.bookList = [];
+        this.container = document.querySelector("#container");
+        this.book = "";
         this.api = new Api();
-        this.main.addEventListener("click",this.mainClk)
+        this.init();
+        this.rand = document.getElementsByTagName("tr");
+        //this.main.removeEventListener("click", mainClk, true);
+        this.main.addEventListener("click", this.mainAClk);
+
+        
+        //this.rand.addEventListener("click", this.rowclk);
     }
 
-    init = async () => {
-        this.bookList = await this.api.getStudentBooks(this.student);
+    init = () => {
+        console.log(this.student.books);
+        this.createMenu();
+        this.container.innerHTML = `
+        <div id="showstud">
+            <p>Student: ${this.student.name}</p>
+        </div>
+    <div id="showbooks">
+        <table id="biblio">
+            <thead>
+               <tr>
+                   <th scope="col">No</th>
+                   <th scope="col">Title</th>
+                   <th scope="col">Author</th>
+                   <th scope="col">Genre</th>
+                   <th scope="col">Year</th>
+                 </tr>  
 
+
+            </thead>
+            
+           <tbody>
+
+           </tbody>
+        </table>
+    </div>                
+        
+        `;
+        let tbody = document.querySelector("tbody");
+        tbody.innerHTML = this.showBooks(this.student.books);
     }
+
+    // getMyBooks = async () => {
+    //     try {
+    //         this.mybooks = await this.api.getStudentBooks(this.student);
+    //     } catch (e) {
+    //         throw new Error(e);
+    //     }
+    // }
+
+     showBooks = (lista) => {
+         let content = ``;
+         let cont = 0;
+         lista.forEach(b => {
+             content += `
+                <tr>
+                    <th id="col1" scope="row">${++cont}</th>
+                    <td>${b.title}</td>
+                    <td>${b.author}</td>
+                    <td>${b.genre}</td>
+                    <td>${b.year}</td>
+                    <td class="idhide">${b.id}</td>
+                </tr>
+
+             `;
+         });
+         return content;
+     }
 
     createMenu = () => {
         this.aside.innerHTML = `
             <button class="bbtn home">Home</button>
-            <button class="bbtn show">Show My Books</button>
-            <button class="bbtn add">Add New Book</button>
+            
+            <button class="bbtn add">Add/Update Book</button>
             <button class="bbtn delete">Delete One Book</button>
-
         `;
         
-    }
+   }
 
-    mainClk = (e) => {
+    mainAClk = (e) => {
         let elm = e.target;
-
+        if (elm.parentNode.parentNode.tagName == "TBODY") {
+            let chld = elm.parentNode.children;
+            let selId = chld[chld.length - 1].textContent;
+            this.book = this.student.books.filter(a => a.id == selId)[0];
+        }
         if (elm.className == "bbtn home") {
             e.preventDefault();
             let hm = new Home();
         }
+
+        if (elm.className == "bbtn add") {
+            e.preventDefault();
+            let adb = new AddBook(this.student,this.book);
+
+        }
         
 
     }
+    
 }
 
 export { StudentBook};

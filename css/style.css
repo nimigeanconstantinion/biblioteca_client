@@ -51,6 +51,7 @@ aside{
 #container{
     display: block;
     width: 100%;
+    position: relative;;
 }
 thead{
     background:#2C3B64 ;
@@ -60,7 +61,7 @@ thead{
 }
 
 #biblio{
-    width: 80%;
+    width: 100%;
 }
 thead th{
     text-align: left;
@@ -68,12 +69,21 @@ thead th{
 .idhide{
     display: none;
 }
+tbody{
+    font-size: 1.2em;
+}
 #col1{
     text-align: right;
 }
 tbody tr:nth-child(even){
     background: #B2BDDD;
 }
+
+tbody tr:nth-child(odd){
+background: gainsboro;
+    
+}
+
 footer{
     background: #2A0000;
     color: white;
@@ -130,7 +140,9 @@ input[type="email"],input[type="password"]{
     margin-bottom: 10px;
 }
 #showbooks{
-    width: 100%;
+    width: 80%;
+    height: 70%;
+    overflow-y: auto;
 }
 #showstud{
     width: 90%;
@@ -141,4 +153,48 @@ input[type="email"],input[type="password"]{
 
 #showbib{
     width: 90%;
+}
+
+
+#frmnewbook{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: #FFD4D4;
+    width: 600px;
+    margin: auto;
+    margin-top: 30px;
+    padding: 10px 25px;
+  
+}
+
+#frmnewbook h1{
+    font-size: 1.5em;
+}
+
+label{
+   font-size: 1.3em;
+}
+input[type="text"]{
+    width: 80%;
+    height: 35px;
+    float: right;
+    margin-bottom: 15px;
+}
+
+.divnewb,.divupdb{
+    width: 100%;
+    margin: 5px auto 5px 0px;
+      
+}
+
+#frmnewbook #btn_nb_submit,#btn_nb_cancel{
+    width: 200px;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    height: 50px;
+    border: none;
+    border-radius: 5px;   
+    background: #550000;
+    color: white;
 }

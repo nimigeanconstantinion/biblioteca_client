@@ -1,12 +1,13 @@
 import { Api } from "../api.js";
 import { Home } from "./Home.js";
+import { StudentBook } from "./studentbook.js";
 
 class Login { 
 
     constructor() {
         this.container = document.querySelector("#container");
         this.main = document.querySelector("main");
-        this.listaStud = [];
+        this.stud = "";
         this.init();
         this.api = new Api();
         this.main.addEventListener("click",this.mainclk);
@@ -51,32 +52,27 @@ class Login {
         }
     }
 
-    checkPass = (n, p) => {
-        
-        let pers = this.listaStud.filter(a => a.email == n && a.pass == p);
-        if (pers.length==1) {
-            return 1;
-        } else {
-            return 0;
-        }
+    checkPass = async (n, p) => {
+        let response = await this.api.chkPass(n, p);
+        return response;
     }
 
 
     mainclk = async (e) => {
         e.preventDefault();
-        
+        console.log("--------sunt in main login-----------");
         let elem = e.target;
         if (elem.id == "btn_log_login") {
             e.preventDefault();
             let peml = document.querySelector("#name").value;  
             let ppas = document.querySelector("#pass").value;
-            await this.loadStudents();
-            let nr = this.lista.filter(a => a.name.includes(name));
-            if (this.checkPass(peml, ppas)) {
-                
+            this.stud = await this.api.getStudentBooks(peml);
+            if (this.stud.password == ppas) {
+                this.main.removeEventListener("click", this.mainclk, true);
+                let sb = new StudentBook(this.stud);
             } else {
-                
-            }
+                alert("n-a mers");
+            }            
         }
 
         if (elem.className == "lbtn home"||elem.id == "btn_log_cancel") {

@@ -32,10 +32,10 @@ class Api{
     
 
     }
-    getStudentBooks = async (student) => {
+    getStudentBooks = async (email) => {
         try {
             
-            let response = await this.api("http://localhost:8080/api/v1/biblio/filtStud/"+student.id, "GET");
+            let response = await this.api("http://localhost:8080/api/v1/students/email/"+email, "GET");
             return response.json();
         } catch (e) {
             throw new Error(e);
@@ -43,15 +43,23 @@ class Api{
         
     }
     
-    addBookStud = async (student, book)=>{
+    addBook = async (id,book)=>{
         try {
-            let response = await this.api("http://localhost:8080/api/v1/biblio/"+student.id, "POST",book);
+            let response = await this.api("http://localhost:8080/api/v1/students/books/add/"+id, "POST",book);
             return response.json();
         } catch (e) {
             throw new Error(e);
         }
-        
-        
+    }
+
+
+    chkPass = async (email,pass)=>{
+        try {
+            let response = await this.api("http://localhost:8080/api/v1/students/pass/"+email+"/"+pass,"GET");
+            return response.json();
+        } catch (e) {
+            throw new Error(e);
+        }
     }
 
     delBookStud = async (student, book) => {
