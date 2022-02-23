@@ -5,17 +5,23 @@ import { StudentBook } from "./studentbook.js";
 class Login { 
 
     constructor() {
+
         this.container = document.querySelector("#container");
         this.main = document.querySelector("main");
+        this.messW = "";
         this.stud = "";
         this.init();
         this.api = new Api();
         this.main.addEventListener("click",this.mainclk);
+    
     }
+
     init = () => {
         this.container.innerHTML = ``;
+        
         let aside = document.querySelector("aside");
         aside.innerHTML = `
+
         <button class="lbtn home">Home</button>
           
         `;
@@ -57,27 +63,52 @@ class Login {
         return response;
     }
 
+    addOOps = () => {
+        let mess = document.createElement("div");
+        mess.id = "divmessage";
+        this.container.appendChild(mess);
+        
+        mess.innerHTML += `
+            <h5>
+                OOPs!!!
+            </h5>
+        `;
+
+    }
 
     mainclk = async (e) => {
         e.preventDefault();
-        console.log("--------sunt in main login-----------");
         let elem = e.target;
         if (elem.id == "btn_log_login") {
             e.preventDefault();
             let peml = document.querySelector("#name").value;  
             let ppas = document.querySelector("#pass").value;
+            
             this.stud = await this.api.getStudentBooks(peml);
             if (this.stud.password == ppas) {
                 this.main.removeEventListener("click", this.mainclk, true);
                 let sb = new StudentBook(this.stud);
             } else {
-                alert("n-a mers");
+                this.addOOps();
+                setTimeout(() => { 
+                    this.messW = document.querySelector("#divmessage");
+                    this.messW.innerHTML += `
+                        <p> Login error!!!! </p>
+                    `;
+                }, 200);
+                setTimeout(() => {
+                    this.messW.style.opacity = 0;
+                }, 1000);
+                setTimeout(() => {
+                    this.container.removeChild(this.messW);
+                },2300);
+
+                
             }            
         }
 
         if (elem.className == "lbtn home"||elem.id == "btn_log_cancel") {
             e.preventDefault();
-            console.log("hkhjkkhkhkhkhkhkh");
             this.container.innerHTML = ``;
             
             let hm = new Home();

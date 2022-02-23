@@ -1,17 +1,23 @@
 class Api{
-    api = (path,method="GET",body=null) => {
+    api(path, method ='GET', body= null){
         let url = path;
+
         const options = {
             method,
-            headers:{
-                'Content-Type': 'application/json;charset=utf-8'
-            }
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+    
+            },
+          
         };
-        if (body != null) {
+
+        if(body !=null){
             options.body = JSON.stringify(body);
         }
-        return fetch(url, options);
-}
+
+        return fetch(url,options);
+
+    }
 
     getallStudents =async () => {
         try {
@@ -46,11 +52,34 @@ class Api{
     addBook = async (id,book)=>{
         try {
             let response = await this.api("http://localhost:8080/api/v1/students/books/add/"+id, "POST",book);
-            return response.json();
+            
+    
         } catch (e) {
             throw new Error(e);
         }
     }
+
+    updateBook = async (idS,idB, uBook) => {
+        try {
+            let response = await this.api("http://localhost:8080/api/v1/students/books/upd/" + idS+"/"+idB, "PUT", uBook);
+            return response.json();
+        } catch (e) {
+            throw new Error(e);
+        }
+
+    }
+
+    deleteBook = async (idS,idB) => {
+        try {
+            let response = await this.api("http://localhost:8080/api/v1/students/books/del/"+idS+"/"+idB, "DELETE");
+            return response.json();
+        } catch (e) {
+            throw new Error(e);
+        }
+
+    }
+
+
 
 
     chkPass = async (email,pass)=>{

@@ -78,7 +78,9 @@ tbody{
 tbody tr:nth-child(even){
     background: #B2BDDD;
 }
-
+tbody tr td{
+height:40px;
+}
 tbody tr:nth-child(odd){
 background: gainsboro;
     
@@ -132,6 +134,7 @@ input[type="email"],input[type="password"]{
 #btn_log_login,#btn_log_cancel{
     width: 90px;
     align-self: flex-start;
+    border: none;
     margin-left: 5%;
     height: 40px;
     background: #2A0000;
@@ -143,16 +146,19 @@ input[type="email"],input[type="password"]{
     width: 80%;
     height: 70%;
     overflow-y: auto;
+    padding-left: 30px;
 }
 #showstud{
     width: 90%;
     height: 80px;
     font-size: 2em;
+    padding: 20px 30px;
     
 }
 
 #showbib{
     width: 90%;
+
 }
 
 
@@ -166,6 +172,10 @@ input[type="email"],input[type="password"]{
     margin-top: 30px;
     padding: 10px 25px;
   
+}
+
+tbody tr:hover{
+    background: #F67E7E;
 }
 
 #frmnewbook h1{
@@ -197,4 +207,54 @@ input[type="text"]{
     border-radius: 5px;   
     background: #550000;
     color: white;
+}
+
+#divmessage{
+    position: absolute;
+    opacity: 1;
+    width: 30%;
+    height: 20%;
+    font-size: 1.5em;
+    padding: 10px;
+    top:40%;
+    left: 35%;
+    background: #F35656;
+    transition: opacity 2s ease-out;
+    color: white;
+}
+
+.butonAdd{
+    background-image: url("/images/shuffle-change-svgrepo-com.svg");
+    width: 30px;
+    height: 30px;
+}
+#butonDel{
+    background-image: url("/images/delete-svgrepo-com.svg");
+    width: 30px;
+    height: 30px;
+
+}
+#imgadd{
+    width: 30px;
+    height: 30px;
+    background-image: url("/images/shuffle-change-svgrepo-com.svg");
+    ;
+}
+
+#coltools{
+    width: 100px;
+}
+.tools{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    
+}
+#toolbtn{
+    margin-right: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90px;
 }

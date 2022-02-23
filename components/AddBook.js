@@ -1,13 +1,16 @@
 import { Home } from "./Home.js";
 
 import { Api } from "../Api.js";
+import { StudentBook } from "./studentbook.js";
 
 
 class AddBook {
     constructor(student, book) {
         this.main = document.querySelector("main");
         this.student = student;
+        this.windMess = "";
         this.book = book;
+        this.vecterr = [0, 0, 0];
         this.aside = document.querySelector("aside");
         this.container = document.querySelector("#container");
         this.showb = document.querySelector("#showbooks");
@@ -36,7 +39,6 @@ class AddBook {
         this.api = new Api();
         this.titlu = "";
         this.main.addEventListener("click", this.addClick);
-        
     }
 
 
@@ -87,14 +89,15 @@ class AddBook {
 
 
     addBook = async () => {
-        let title = this.title.value;
-        let author = this.auth.value;
-        let genre = this.genre.value;
-        let year = this.year.value;
+        let title = this.etitle.value;
+        let author = this.eauth.value;
+        let genre = this.egen.value;
+        let year = this.eyear.value;
         
         try {
-            let response = await this.api.addBook(this.student.id, { title, author, genre, year });
+            let response=await this.api.addBook(this.student.id, { title, author, genre, year });
             return response;
+        
         } catch (e) {
             throw new Error(e);
         }
@@ -102,80 +105,154 @@ class AddBook {
     }
 
     updBook = async () => {
-        
+        try {
+            
+            let title = this.etitle.value;
+            let author = this.eauth.value;
+            let genre= this.egen.value;
+            let year = this.eyear.value;
+            
+            let response = await this.api.updateBook(this.student.id, this.book.id, {title,author,genre,year});
+            return response;
+        } catch (e) {
+            throw new Error(e);
+        }        
     }
 
     checkError = () => {
-        let diver = document.querySelector("#err");
-        diver.innerHTML = ``;
         let swer = 0;
-        if (this.title.value.length == 0) {
-            //    // alert("in fara titlu");
+        if (document.querySelector("#title").value.length == 0) {
             swer = 1;
-            if (diver.innerHTML.length == 0) {
-                this.addOOps();
-            }
-            diver.innerHTML += `
-                    <p id="ertit">Title is Required</p>
-                `;
+            this.vecterr[0] = 1;
         }
 
-        if (this.auth.value.length == 0) {
+        if (document.querySelector("#auth").value.length == 0) {
             swer = 1;
-
-            if (diver.innerHTML.length == 0) {
-                this.addOOps();
-            }
-            diver.innerHTML += `
-                <p id="eraut">Author is Required</p>
-     
-                `;
-            
-        
+            this.vecterr[1] = 1;
         }
 
-        if (this.year.value < 1500 || this.year.value > 2022) {
+        if (document.querySelector("#year").value < 1500 || document.querySelector("#year").value > 2022) {
             swer = 1;
-            if (diver.innerHTML.length == 0) {
-                this.addOOps();
-            }
-            diver.innerHTML += `
-                <p id="eraut">Year error</p>
-                `;
-            
+            this.vecterr[2] = 1;
         }
-        return swer;
+        if (swer > 0) {
+            return 1;
+        } else {
+            return swer;
+        }
     }
-
+    
     addOOps = () => {
-        let diver = document.querySelector("#err");
-        let diverMessage = diver.innerHTML;
-        diver.innerHTML += `
+        let mess = document.createElement("div");
+        mess.id = "divmessage";
+        this.container.appendChild(mess);
+        
+        mess.innerHTML += `
             <h5>
                 OOPs!!!
             </h5>
         `;
 
     }
-    
-    addClick = (e) => {
 
-        e.preventDefault();
+    addMessage = (message) => {
+        let mss = document.querySelector("#divmessage");
+        mss.innerHTML += `
+            <p>${message}</p>
+        `;
+    }
+    
+    refreshStudent = async () => {
+        try {
+            let respo = await this.api.getStudentBooks(this.student.email);
+            return respo;
+        } catch (e) {
+            throw new Error(e);
+        }
+    }
+
+    addClick = async (e) => {
+
         let clk = e.target;
-        
+        e.preventDefault();
         if (clk.className == "buton unu") {
                 
-            if (this.checkError() == 0) {
-                let response = this.addBook();
-                alert(response);
+           
+            console.log(this.checkError());
+            if (this.checkError()==0) {
+                if (this.book == "") {
+                    
+                   let response= await this.addBook();
+                   let resps= await this.refreshStudent();
+                    this.student = resps;
+                    let stbb = new StudentBook(this.student);
+
+                } else {
+                    try {
+                      let response2=await this.updBook();
+                        return response2;
+                    } catch (e) {
+                        alert("eroareeeeeee");
+                    }
+                    try {
+                        let response3 = await this.refreshStudent();
+                        this.student = response3;
+                        let stb = new StudentBook(this.student);
+
+                        return response3;
+                    } catch (e) {
+                        
+                    }
+                    
+                    
+                }
                 
             } else {
-                
+                this.addOOps();
+                setTimeout(()=>{
+                this.windMess = document.querySelector("#divmessage");
+                if (this.vecterr[0] > 0) {
+                    this.windMess.innerHTML += `
+                        <p>You can't add with empty title!!</p>
+                    `;
+                }
+
+
+                if (this.vecterr[1] > 0) {
+                    this.windMess.innerHTML += `
+                        <p>You can't add with empty author</p>
+                    `;
+                }
+
+                if (this.vecterr[2] > 0) {
+                    this.windMess.innerHTML += `
+                        <p>Year between 1500 and 2022</p>
+                    `;
+                }
+
+
+
+
+                },300);
+                setTimeout(() => {
+                    this.windMess.style.opacity = 0;
+                    
+                }, 1000);
+
+                setTimeout(() => {
+                    this.container.removeChild(this.windMess);
+                   
+                }, 3300);
 
             }
             
         
         }
+          
+        if (clk.className == "buton doi") { 
+            let stb = new StudentBook(this.student);
+        }
     }
+
 }
 export { AddBook };

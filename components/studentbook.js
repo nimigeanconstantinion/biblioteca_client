@@ -3,6 +3,7 @@ import { AddBook } from "./AddBook.js";
 import { Home } from "./Home.js";
 
 class StudentBook{
+
     constructor(student) {
         this.student = student;
         this.aside = document.querySelector("aside");
@@ -11,16 +12,13 @@ class StudentBook{
         this.book = "";
         this.api = new Api();
         this.init();
-        this.rand = document.getElementsByTagName("tr");
         //this.main.removeEventListener("click", mainClk, true);
         this.main.addEventListener("click", this.mainAClk);
 
         
-        //this.rand.addEventListener("click", this.rowclk);
     }
 
     init = () => {
-        console.log(this.student.books);
         this.createMenu();
         this.container.innerHTML = `
         <div id="showstud">
@@ -51,13 +49,25 @@ class StudentBook{
         tbody.innerHTML = this.showBooks(this.student.books);
     }
 
-    // getMyBooks = async () => {
-    //     try {
-    //         this.mybooks = await this.api.getStudentBooks(this.student);
-    //     } catch (e) {
-    //         throw new Error(e);
-    //     }
-    // }
+    refreshPage =async () => {
+        try {
+                let response= await this.refreshStud();
+                this.student = response;
+                return response;
+        } catch (e) {
+            throw new Error(e);
+        }
+    
+    }
+
+    refreshStud = async () => {
+        try {
+            let response = await this.api.getStudentBooks(this.student.email);
+            return response;
+        } catch (e) {
+            throw new Error(e);
+        }
+    }
 
      showBooks = (lista) => {
          let content = ``;
@@ -88,7 +98,19 @@ class StudentBook{
         
    }
 
-    mainAClk = (e) => {
+    delBook =async () => {
+        try {
+
+            let response = await this.api.deleteBook(this.student.id, this.book.id);
+            return response;
+        
+        } catch (e) {
+            throw new Error(e);
+        }
+   }
+    
+
+    mainAClk =async (e) => {
         let elm = e.target;
         if (elm.parentNode.parentNode.tagName == "TBODY") {
             let chld = elm.parentNode.children;
@@ -105,6 +127,14 @@ class StudentBook{
             let adb = new AddBook(this.student,this.book);
 
         }
+        if (elm.className == "bbtn delete") {
+            e.preventDefault();
+            let resp= await this.delBook();
+
+            let resp2=await this.refreshPage();
+            this.init();
+        }
+        
         
 
     }

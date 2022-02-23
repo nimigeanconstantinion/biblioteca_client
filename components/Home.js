@@ -33,7 +33,6 @@ class Home{
 
     mainClk = (e) => {
         let elm = e.target;
-        console.log(elm);
         if (elm.className == "abtn login") {
             e.preventDefault();
             let lg = new Login();
