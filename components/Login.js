@@ -5,24 +5,47 @@ import { StudentBook } from "./studentbook.js";
 class Login { 
 
     constructor() {
-
-        this.container = document.querySelector("#container");
-        this.main = document.querySelector("main");
+        this.body = document.querySelector("body");
+        this.container = "";
+        this.main = "";
         this.messW = "";
         this.stud = "";
         this.init();
+        this.container = document.querySelector("#container");
+        this.main = document.querySelector("main");
+
         this.api = new Api();
         this.main.addEventListener("click",this.mainclk);
     
     }
 
     init = () => {
+        this.body.innerHTML = `
+        <body>
+            <header>
+                <h1>Biblioteca Online</h1>
+            </header>
+    
+            <main>
+                <aside>
+                    <button class="abtn home">Home</button>
+                    <button class="abtn login">Login</button>
+
+                </aside>
+                <div id="container"></div>    
+            </main>
+            <footer>Copyright </footer>
+        </body>
+        `;
+        this.container = document.querySelector("#container");
+        this.main = document.querySelector("main");
+
         this.container.innerHTML = ``;
         
         let aside = document.querySelector("aside");
         aside.innerHTML = `
 
-        <button class="lbtn home">Home</button>
+             <button class="lbtn home">Home</button>
           
         `;
         

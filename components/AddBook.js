@@ -6,14 +6,14 @@ import { StudentBook } from "./studentbook.js";
 
 class AddBook {
     constructor(student, book) {
-        this.main = document.querySelector("main");
+        this.body = document.querySelector("body");
+        this.container = "";
+        this.main = "";
         this.student = student;
         this.windMess = "";
         this.book = book;
         this.vecterr = [0, 0, 0];
-        this.aside = document.querySelector("aside");
-        this.container = document.querySelector("#container");
-        this.showb = document.querySelector("#showbooks");
+        this.aside ="";
         if (typeof this.book == "string") {
             this.id = 0;
             this.title = "";
@@ -21,7 +21,6 @@ class AddBook {
             this.genre = "";
             this.year = 0;
         } else {
-            console.log("e obiect");
             this.id = this.book.id;
             this.title = this.book.title;
             this.author = this.book.author;
@@ -31,6 +30,12 @@ class AddBook {
         this.student_id = student.id;
 
         this.initForm();
+        this.showb = document.querySelector("#showbooks");
+        this.container = document.querySelector("#container");
+        this.main=document.querySelector("main");
+        this.aside=document.querySelector("aside");        
+        this.createMenu();
+
         this.etitle = document.querySelector("#title");
         this.eauth = document.querySelector("#auth");
         this.egen = document.querySelector("#gen");
@@ -38,12 +43,31 @@ class AddBook {
 
         this.api = new Api();
         this.titlu = "";
+        
         this.main.addEventListener("click", this.addClick);
     }
 
 
     initForm = () => {
-        let oldC = this.container.innerHTML;
+
+        this.body.innerHTML = `
+        <body>
+            <header>
+                <h1>Biblioteca Online</h1>
+            </header>
+    
+            <main>
+                <aside>
+                </aside>
+                <div id="container"></div>    
+            </main>
+            <footer>Copyright </footer>
+        </body>
+        `;
+
+
+        this.container = document.querySelector("#container");
+        this.container.innerHTML;
         
         //let shb = document.querySelector("#showbooks");
         // shb.style.pointerEvents = "none";
@@ -87,6 +111,14 @@ class AddBook {
 
     }
 
+    createMenu = () => {
+        this.aside.innerHTML = `
+            <button class="bbtn home">Home</button>
+            <button class="bbtn add">Add/Update Book</button>
+            <button class="bbtn delete">Delete One Book</button>
+        `;
+        
+   }
 
     addBook = async () => {
         let title = this.etitle.value;
@@ -111,10 +143,11 @@ class AddBook {
             let author = this.eauth.value;
             let genre= this.egen.value;
             let year = this.eyear.value;
-            
             let response = await this.api.updateBook(this.student.id, this.book.id, {title,author,genre,year});
+        
             return response;
         } catch (e) {
+            console.log("eroare update");
             throw new Error(e);
         }        
     }
@@ -167,6 +200,7 @@ class AddBook {
             let respo = await this.api.getStudentBooks(this.student.email);
             return respo;
         } catch (e) {
+            console.log("eroare refresh student");
             throw new Error(e);
         }
     }
@@ -174,43 +208,32 @@ class AddBook {
     addClick = async (e) => {
 
         let clk = e.target;
-        e.preventDefault();
-        if (clk.className == "buton unu") {
-                
+        if (clk.id == "btn_nb_submit") {
+            e.preventDefault();        
            
-            console.log(this.checkError());
             if (this.checkError()==0) {
                 if (this.book == "") {
                     
                    let response= await this.addBook();
                    let resps= await this.refreshStudent();
-                    this.student = resps;
-                    let stbb = new StudentBook(this.student);
+                   this.student = resps;
+                   let stbb = new StudentBook(this.student);
 
                 } else {
-                    try {
-                      let response2=await this.updBook();
-                        return response2;
-                    } catch (e) {
-                        alert("eroareeeeeee");
-                    }
-                    try {
-                        let response3 = await this.refreshStudent();
-                        this.student = response3;
-                        let stb = new StudentBook(this.student);
-
-                        return response3;
-                    } catch (e) {
+                    let response2=await this.updBook();
+                  
+                    let response3 = await this.refreshStudent();
+                  
+                    this.student = response3;
+                    let stb = new StudentBook(this.student);
                         
-                    }
-                    
-                    
                 }
                 
             } else {
                 this.addOOps();
                 setTimeout(()=>{
                 this.windMess = document.querySelector("#divmessage");
+
                 if (this.vecterr[0] > 0) {
                     this.windMess.innerHTML += `
                         <p>You can't add with empty title!!</p>
@@ -229,11 +252,8 @@ class AddBook {
                         <p>Year between 1500 and 2022</p>
                     `;
                 }
-
-
-
-
                 },300);
+
                 setTimeout(() => {
                     this.windMess.style.opacity = 0;
                     

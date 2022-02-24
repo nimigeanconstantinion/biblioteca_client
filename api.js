@@ -1,14 +1,12 @@
 class Api{
-    api(path, method ='GET', body= null){
+    api(path, method="GET", body= null){
         let url = path;
 
         const options = {
             method,
             headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-    
-            },
-          
+                'Content-Type': 'application/json;charset=utf-8;'
+            }
         };
 
         if(body !=null){
@@ -53,7 +51,7 @@ class Api{
         try {
             let response = await this.api("http://localhost:8080/api/v1/students/books/add/"+id, "POST",book);
             
-    
+            return response;
         } catch (e) {
             throw new Error(e);
         }
@@ -62,7 +60,7 @@ class Api{
     updateBook = async (idS,idB, uBook) => {
         try {
             let response = await this.api("http://localhost:8080/api/v1/students/books/upd/" + idS+"/"+idB, "PUT", uBook);
-            return response.json();
+            return response;
         } catch (e) {
             throw new Error(e);
         }
@@ -72,7 +70,7 @@ class Api{
     deleteBook = async (idS,idB) => {
         try {
             let response = await this.api("http://localhost:8080/api/v1/students/books/del/"+idS+"/"+idB, "DELETE");
-            return response.json();
+            return response;
         } catch (e) {
             throw new Error(e);
         }
